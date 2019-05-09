@@ -1,44 +1,36 @@
-"""
-Various classes to load data of different sources/formats etc
-"""
-
-
-from skimage import io
 import numpy as np
-from os.path import join
-import pandas as pd
 from torch.utils.data import Dataset
 
 
-class FER2013Dataset(Dataset):
+class QuestionsDataset(Dataset):
     """
-    FER2013 Dataset
+    Sentence Dataset
     """
 
-    def __init__(self, data_folder, transform=None):
+    def __init__(self, text_data, word_to_idx=None):
         """
         """
-        self.transform = transform
-        self.data_folder = data_folder
-        manifest_path =  join(data_folder, "manifest.csv")
-        self.manifest = pd.read_csv(manifest_path)
+        with open(text_data, 'r') as inp:
+            self.sents = inp.readlines()
+        self.word_to_idx = word_to_idx
 
     def __len__(self):
-        return len(self.manifest)
+        return len(self.sents)
 
     def __getitem__(self, idx):
-        img_name = self.manifest.iloc[idx, 0]
-        img_path = join(self.data_folder, img_name)
-        img = io.imread(img_path)
+        words = self.sents[idx].split()
+        label = 1 if words[-1] == '?' else 0
 
-        img = img.reshape((48, 48, 1))
-        label = self.manifest.iloc[idx, 1]
-
-        item = {"image": img, "label": label}
-
-        if self.transform:
-            item = self.transform(item)
-
+        words = [self._get_word_idx(w) for w in words[:-1]]
+        item = {
+                "words": np.asarray(words, dtype=np.float32),
+                "label": label
+                }
         return item
 
+    def _get_word_idx(self, word):
+        if word in self.word_to_idx:
+            return self.word_to_idx[word]
+        else: 
+            return self.word_to_idx['UNK']
 

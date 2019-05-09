@@ -25,18 +25,20 @@ def main(config, resume):
     train_logger = Logger()
 
     # setup data_loader instances
-    data_loader = get_instance(module_data, 'train_loader', config)
+    train_data_loader = get_instance(module_data, 'train_loader', config)
     valid_data_loader = get_instance(module_data, 'val_loader', config)
+    vocab_size = train_data_loader.get_vocab_size()
 
     # build model architecture
+    config['arch']['args']['vocab_size'] = vocab_size
     model = get_instance(module_arch, 'arch', config)
     print(model)
     
-    # get function handles of loss and metrics
+    # get loss and metrics
     loss = getattr(module_loss, config['loss'])
     metrics = [getattr(module_metric, met) for met in config['metrics']]
 
-    # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
+    # build optimizer and lr_scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = get_instance(torch.optim, 'optimizer', config, trainable_params)
     lr_scheduler = get_instance(torch.optim.lr_scheduler, 'lr_scheduler', config, optimizer)
@@ -44,7 +46,7 @@ def main(config, resume):
     trainer = Trainer(model, loss, metrics, optimizer, 
                       resume=resume,
                       config=config,
-                      data_loader=data_loader,
+                      data_loader=train_data_loader,
                       valid_data_loader=valid_data_loader,
                       lr_scheduler=lr_scheduler,
                       train_logger=train_logger)
@@ -69,3 +71,4 @@ if __name__ == '__main__':
         raise AssertionError("Configuration file need to be specified. Add '-c config.json', for example.")
     
     main(config, args.resume)
+

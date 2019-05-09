@@ -1,27 +1,32 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "QuestionDetect",
     "n_gpu": 1,
     
     "arch": {
-        "type": "MnistModel",
-        "args": {}
+        "type": "QuestionDetector",
+        "args": {
+        "embedding_dim": 10,
+        "hidden_dim": 4
+        }
     },
     "train_loader": {
-        "type": "FER2013Loader",
+        "type": "QuestionsLoader",
         "args":{
-            "data_dir": "data/fer2013/train",
+            "data_dir": "data/debug",
             "batch_size": 128,
             "shuffle": true,
-            "num_workers": 2
+            "num_workers": 2,
+            "mode":"train"
         }
     },
     "val_loader": {
-        "type": "FER2013Loader",
+        "type": "QuestionsLoader",
         "args":{
-            "data_dir": "data/fer2013/val",
+            "data_dir": "data/debug",
             "batch_size": 128,
             "shuffle": false,
-            "num_workers": 2
+            "num_workers": 2,
+            "mode":"val"
         }
     },
     "optimizer": {

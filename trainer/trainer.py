@@ -49,7 +49,7 @@ class Trainer(BaseTrainer):
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, batch in enumerate(self.data_loader):
-            data, target = batch["image"], batch["label"]
+            data, target = batch[0], batch[1]
             data, target = data.to(self.device, dtype=torch.float), target.to(self.device, dtype=torch.long)
 
             self.optimizer.zero_grad()
