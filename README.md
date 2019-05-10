@@ -2,7 +2,7 @@
 
 ## Model architecture:
 
-This is a LSTM based Recurrent Network. The many-to-one approach is used to predict the last label of an input sentence, the label being either `question` or `not-a-`question`.
+This is a LSTM based Recurrent Network. The many-to-one approach is used to predict the last label of an input sentence, the label being either `question` or `not-a-question`.
 
 1. Instead of using simple one-hot-encodings for the vocabulary, it uses word embeddings to represent high-dimentional patterns.
 2. The network uses `packed padded sequences` because of variability in input lengths. The packed padded inputs help in speeding up the training since lot of processing for `zero-padding` is not done. 
