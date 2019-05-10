@@ -1,8 +1,6 @@
-# QuestionDetection using Deep Learning apporach
----
+# QuestionDetection using Deep Learning
 
 ## Model architecture:
----
 
 This is a LSTM based Recurrent Network. The many-to-one approach is used to predict the last label of an input sentence, the label being either `question` or `not-a-`question`.
 
@@ -19,7 +17,6 @@ This is a LSTM based Recurrent Network. The many-to-one approach is used to pred
 ```
 
 ## Dataset:
----
 
 ### Pre-processing:
 The input data is expected to be in the following format:
@@ -30,7 +27,6 @@ The input data is expected to be in the following format:
 
 
 ## Tensorboard Logging:
----
 
 All the `logs` are saved in the `saved` folder. Project uses `tensorboard` to write the logs and so `tensorboardX` needs to be installed in your environment
 
