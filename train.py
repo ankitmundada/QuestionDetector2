@@ -10,12 +10,8 @@ import model.model as module_arch
 from trainer import Trainer
 from utils import Logger
 
-
-
-from torchvision import transforms
 from base import BaseDataLoader
 from dataset import datasets
-from dataset.transforms import ToTensor
 
 
 def get_instance(module, name, config, *args):
