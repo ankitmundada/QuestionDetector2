@@ -21,7 +21,7 @@ This is a LSTM based Recurrent Network. The many-to-one approach is used to pred
 ## Training:
 
 Run the following command to train the model. Note: All the `params` are loaded from `config.json`
-```python
+```shell
 python train.py --config config.json
 ```
 
