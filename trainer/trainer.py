@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from torchvision.utils import make_grid
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from base import BaseTrainer
 
 
@@ -50,7 +51,7 @@ class Trainer(BaseTrainer):
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, batch in enumerate(self.data_loader):
             data, target = batch[0], batch[1]
-            data, target = data.to(self.device, dtype=torch.float), target.to(self.device, dtype=torch.long)
+            data, target = data.to(self.device, dtype=torch.long), target.to(self.device, dtype=torch.float)
 
             self.optimizer.zero_grad()
             output = self.model(data)
@@ -58,6 +59,7 @@ class Trainer(BaseTrainer):
             loss.backward()
             self.optimizer.step()
 
+            data, _ = pad_packed_sequence(data, batch_first=True)
             self.writer.set_step((epoch - 1) * len(self.data_loader) + batch_idx)
             self.writer.add_scalar('loss', loss.item())
             total_loss += loss.item()
@@ -100,12 +102,13 @@ class Trainer(BaseTrainer):
         total_val_metrics = np.zeros(len(self.metrics))
         with torch.no_grad():
             for batch_idx, batch in enumerate(self.valid_data_loader):
-                data, target = batch["image"], batch["label"]
-                data, target = data.to(self.device, dtype=torch.float), target.to(self.device, dtype=torch.long)
+                data, target = batch[0], batch[1]
+                data, target = data.to(self.device, dtype=torch.long), target.to(self.device, dtype=torch.float)
 
                 output = self.model(data)
                 loss = self.loss(output, target)
 
+                data, _ = pad_packed_sequence(data, batch_first=True)
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.writer.add_scalar('loss', loss.item())
                 total_val_loss += loss.item()

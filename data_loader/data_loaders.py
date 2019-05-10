@@ -48,10 +48,10 @@ class QuestionsLoader(BaseDataLoader):
                 vocab.update(line.split())
                 line = inp.readline()
 
-        word_to_idx = {w: idx+1 for idx, w in enumerate(vocab)}
+        word_to_idx = {w: idx for idx, w in enumerate(vocab)}
         self.vocab_size = len(word_to_idx)
 
-        print("Saving 'word_to_idx' dictionary")
+        print("Saving 'word_to_idx' dictionary. vocab size: " + str(self.vocab_size))
         with open(dict_path, 'wb') as out:
             pickle.dump(word_to_idx, out, protocol=pickle.HIGHEST_PROTOCOL)
         return word_to_idx
@@ -74,9 +74,10 @@ def collate_fn(batch):
     sents_sorted = [sents[i] for i in sort_idx.tolist()]
     labels = labels[sort_idx]
     max_length = max(sent_lengths)
-    for i in range(len(sents)):
-        sents[i] = np.append(sents[i], np.zeros(max_length - sents[i].shape[0]))
+    for i in range(len(sents_sorted)):
+        sents_sorted[i] = np.append(sents_sorted[i], np.zeros(max_length - sents_sorted[i].shape[0]))
 
-    packed_batch = pack(torch.tensor(sents), torch.tensor(sent_lengths), batch_first=True)
+    packed_batch = pack(torch.tensor(sents_sorted, dtype=torch.long), torch.tensor(sent_lengths), batch_first=True)
     
-    return packed_batch, torch.tensor(labels)
+    return packed_batch, torch.tensor(labels, dtype=torch.float)
+    #return torch.tensor(sents_sorted, dtype=torch.long), torch.tensor(labels, dtype=torch.float)
