@@ -10,7 +10,7 @@ patterns['newlines'] = (re.compile(r'[\n\r]+'), ' ')
 patterns['alphanum_word'] = (re.compile(r'\S*\d+\S*'), ' N ') # Anything with a number
 patterns['eos_puncts'] = (re.compile(r"[.!]+"), ' | ') # End of Sentence Puctuations without Question Mark
 patterns['q_mark'] = (re.compile(r"\?+"), ' ? ')
-patterns["non_dict_chars"] = (re.compile(r'[^a-zN|?\n ]'), '')
+patterns["non_dict_chars"] = (re.compile(r'[^a-zN|?\n ]+'), '')
 patterns["multi_space"] = (re.compile(r'[ ]{2,}'), ' ')
 patterns["start_space"] = (re.compile(r'\n\s+'), '\n')
 
@@ -30,6 +30,13 @@ def clean_file(input_file, output_file, clean_type):
         pass #TODO
 
     with open(output_file, 'w') as out:
+        sents = text.split('\n')
+        text = ""
+        for s in sents:
+            words = s.split()
+            if len(words) > args.max_sent_length or len(words) < args.min_sent_length:
+                continue
+            text += (s + "\n")
         out.write(text)
 
 
@@ -39,7 +46,9 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='PreProcessing the raw files')
     parser.add_argument('--input_dir', type=str, required=True, help='Directory containing files to be processed')
     parser.add_argument('--output_dir', type=str, required=True, help='Destination Directory')
-    parser.add_argument('--clean_type', type=str, choices=['end_sent', 'mid_sent'], required=True, help='What kind of processing do you want.')
+    parser.add_argument('--clean_type', type=str, default='end_sent', choices=['end_sent', 'mid_sent'], help='What kind of processing do you want.')
+    parser.add_argument('--max_sent_length', type=int, default=20)
+    parser.add_argument('--min_sent_length', type=str, default=2) 
 
     args = parser.parse_args()
 
