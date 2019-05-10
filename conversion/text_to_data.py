@@ -6,6 +6,7 @@ import argparse
 from collections import OrderedDict
 
 patterns = OrderedDict()
+patterns["pre_filtering"] = (re.compile(r'[^a-zA-Z0-9?.!\n\r ]+'), '')
 patterns['newlines'] = (re.compile(r'[\n\r]+'), ' ')
 patterns['alphanum_word'] = (re.compile(r'\S*\d+\S*'), ' N ') # Anything with a number
 patterns['eos_puncts'] = (re.compile(r"[.!]+"), ' | ') # End of Sentence Puctuations without Question Mark
@@ -16,6 +17,7 @@ patterns["start_space"] = (re.compile(r'\n\s+'), '\n')
 
 
 def clean_file(input_file, output_file, clean_type):
+    print(input_file)
     if clean_type=='end_sent':
         patterns['eos_puncts'] = (re.compile(r"[.!]+"), ' |\n') # End of Sentence Puctuations without Question Mark
         patterns['q_mark'] = (re.compile(r"\?+"), ' ?\n')
