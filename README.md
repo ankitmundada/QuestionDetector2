@@ -8,7 +8,7 @@ This is a LSTM based Recurrent Network. The many-to-one approach is used to pred
 2. The network uses `packed padded sequences` because of variability in input lengths. The packed padded inputs help in speeding up the training since lot of processing for `zero-padding` is not done. 
 3. This is binary classification architecture, in which an input sequence is classified as either a `question` or `not-a-question`
 4. The final probabilties are calculated using `softmax`
-5. All the `params` can be found in `configs.json` file
+5. All the `params` can be found in `config.json` file
 ```python
     def __init__(self, embedding_dim, hidden_dim, vocab_size):
         super(QuestionDetector, self).__init__()
