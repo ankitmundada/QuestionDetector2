@@ -18,6 +18,13 @@ This is a LSTM based Recurrent Network. The many-to-one approach is used to pred
         self.fc1 = nn.Linear(hidden_dim, 1) 
 ```
 
+## Training:
+
+Run the following command to train the model. Note: All the `params` are loaded from `config.json`
+```python
+python train.py --config config.json
+```
+
 ## Dataset:
 
 ### Pre-processing:
