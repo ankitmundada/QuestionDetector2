@@ -14,8 +14,8 @@ class QuestionDetector(nn.Module):
         self.fc1 = nn.Linear(hidden_dim, 1) 
 
     def forward(self, sentence):
-        embeds = self.word_embeddings(sentence.data)
-        packed_embeds = torch.nn.utils.rnn.PackedSequence(embeds, sentence.batch_sizes)
+        embeds = self.word_embeddings(sentence[0])
+        packed_embeds = torch.nn.utils.rnn.PackedSequence(embeds, sentence[1])
         out, _ = self.lstm(packed_embeds)
         out, _ = pad_packed_sequence(out, batch_first=True)
         out    = self.fc1(out[:, -1, :])
